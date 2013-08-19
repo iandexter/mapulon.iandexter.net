@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [ -f $OPENSHIFT_REPO_DIR/php/config/autoconfig.php ]
+then
+    pushd $OPENSHIFT_REPO_DIR/php
+    php index.php
+    popd
+fi
+
+pushd $OPENSHIFT_REPO_DIR/php
+if [ ! -f $OPENSHIFT_DATA_DIR/${OPENSHIFT_APP_NAME}-config.php ]
+then
+    echo "Persisting Configuration."
+    mv config/config.php ${OPENSHIFT_DATA_DIR}/${OPENSHIFT_APP_NAME}-config.php
+    ln -s $OPENSHIFT_DATA_DIR/$OPENSHIFT_APP_NAME-config.php $OPENSHIFT_REPO_DIR/php/config/config.php
+fi
+popd
