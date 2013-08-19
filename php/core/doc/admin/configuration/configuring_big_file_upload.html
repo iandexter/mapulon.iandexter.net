@@ -1,0 +1,162 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Big Files &mdash; ownCloud Administrators Manual v5.0 documentation</title>
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '5.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap.js"></script>
+    <link rel="top" title="ownCloud Administrators Manual v5.0 documentation" href="../index.html" />
+<script type="text/javascript">
+(function () {
+  /**
+   * Patch TOC list.
+   *
+   * Will mutate the underlying span to have a correct ul for nav.
+   *
+   * @param $span: Span containing nested UL's to mutate.
+   * @param minLevel: Starting level for nested lists. (1: global, 2: local).
+   */
+  var patchToc = function ($ul, minLevel) {
+    var findA;
+
+    // Find all a "internal" tags, traversing recursively.
+    findA = function ($elem, level) {
+      var level = level || 0,
+        $items = $elem.find("> li > a.internal, > ul, > li > ul");
+
+      // Iterate everything in order.
+      $items.each(function (index, item) {
+        var $item = $(item),
+          tag = item.tagName.toLowerCase(),
+          pad = 15 + ((level - minLevel) * 10);
+
+        if (tag === 'a' && level >= minLevel) {
+          // Add to existing padding.
+          $item.css('padding-left', pad + "px");
+          console.log(level, $item, 'padding-left', pad + "px");
+        } else if (tag === 'ul') {
+          // Recurse.
+          findA($item, level + 1);
+        }
+      });
+    };
+
+    console.log("HERE");
+    findA($ul);
+  };
+
+  $(document).ready(function () {
+    // Add styling, structure to TOC's.
+    $(".dropdown-menu").each(function () {
+      $(this).find("ul").each(function (index, item){
+        var $item = $(item);
+        $item.addClass('unstyled');
+      });
+      $(this).find("li").each(function () {
+        $(this).parent().append(this);
+      });
+    });
+
+    // Patch in level.
+    patchToc($("ul.globaltoc"), 2);
+    patchToc($("ul.localtoc"), 2);
+
+    // Enable dropdown.
+    $('.dropdown-toggle').dropdown();
+  });
+}());
+</script>
+
+  </head>
+  <body>
+  
+
+<div class="container">
+  <div class="content">
+    <div class="page-header">
+      <h1><a href="../contents.html">ownCloud Administrators Manual</a></h1>
+
+    </div>
+    
+			<div class="row">
+				<div class="span3">
+					<div class="sidebar">
+						<div class="well">
+							<div class="menu-support-container">
+								<ul id="menu-support" class="menu">
+									<ul>
+										<li><a href="../contents.html">Overview</a></li>
+									</ul>
+                  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Admin Documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../maintenance/index.html">Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../issues/index.html">Issues</a></li>
+</ul>
+
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+        
+
+				<div class="span9">
+					<div class="page-content">
+						
+  <div class="section" id="big-files">
+<h1>Big Files<a class="headerlink" href="#big-files" title="Permalink to this headline">¶</a></h1>
+<p>There are a few default configuration settings that you will want to change to enable ownCloud to operate more effectively as a self hosted file sync and share server. When uploading through the web client, ownCloud is governed by PHP and Apache. As a default, PHP is configured for only 2 MB uploads. This is not entirely useful, so it is important to increase these variables to the sizes you want to support on your server. Point your favorite text editor over to your php.ini file. On different server operating systems this is located in different places. On openSUSE and Ubuntu, for example, this is located in /etc/php5/apache2/php.ini Note: the command ‘php -i | grep php.ini’ can help you locate your php.ini on Linux. On Windows, you can find this file within C:/Program Files (x86)/PHP/PHP.ini Edit the php.ini file, looking for:</p>
+<ul class="simple">
+<li>upload_max_filesize = 500 MB</li>
+<li>post_max_size = 600 MB</li>
+</ul>
+<p>The defaults for these values are quite small, so change them to to 500 MB and 600MB, or 1G and 1.2G, for example, and you have adjusted the maximum file size that can be uploaded at one time. Make sure you restart your Apache server after these changes, or it will not take affect! Note: You will want these two values to be about the same size, with post_max_size slightly larger to account for headers in the uploaded files. If you find later that files keep timing out on upload, you may want to also change these settings in the php.ini file: max_input_time memory_limit max_execution_time post_max_size See below for more on php.ini settings from radlinks.com. <strong>PHP.ini settings</strong></p>
+<ul class="simple">
+<li><strong>upload_max_filesize and post_max_size:</strong> Files are usually POSTed to the webserver in a format known as ‘multipart/form-data’. The post_max_size sets the upper limit on the amount of data that a script can accept in this manner. Ideally this value should be larger than the value that you set for upload_max_filesize It’s important to realize that upload_max_filesize is the sum of the sizes of all the files that you are uploading. post_max_size is the upload_max_filesize plus the sum of the lengths of all the other fields in the form plus any mime headers that the encoder might include. Since these fields are typically small you can often approximate the upload max size to the post max size. According to the PHP documentation you can set a MAX_UPLOAD_LIMIT in your HTML form to suggest a limit to the browser. Our understanding is that browsers totally ignore this directive and the only solution that can impose such a client side restriction is our own Rad Upload Applet.</li>
+<li><strong>memory_limit:</strong> When the PHP engine is handling an incoming POST it needs to keep some of the incoming data in memory. This directive has any effect only if you have used the –enable-memory-limit option at configuration time. Setting too high a value can be very dangerous because if several uploads are being handled concurrently all available memory will be used up and other unrelated scripts that consume a lot of memory might effect the whole server as well.</li>
+<li><strong>max_execution_time and max_input_time:</strong> These settings define the maximum life time of the script and the time that the script should spend in accepting input. If several mega bytes of data are being transfered max_input_time should be reasonably high. You can override the setting in the ini file for max_input_time by calling the set_time_limit() function in your scripts.</li>
+</ul>
+<p><strong>Additional IIS Server Upload Step</strong> Now you have to go back to IIS manager and make one last change to enable file uploads on the webserver larger than 30MB.</p>
+<ul class="simple">
+<li>Go to the start menu, and type in ‘iis manager’</li>
+<li>Open IIS Manager</li>
+<li>Select the website you want enable to accept large file uploads</li>
+<li>In the main window in the middle double click on the icon “Request filtering”</li>
+<li>Once the window is opened you will see a bunch of tabs across the top</li>
+<li>On the far right, select “Edit Feature Settings” and modify the “Maximum allowed content length (bytes)” In here, you can change this to up to 4.1 GB. Note: this entry is in BYTES, not KB!</li>
+<li>Click OK and then restart IIS.</li>
+</ul>
+</div>
+
+
+					</div>
+				</div>
+			</div>
+    
+  </div>
+</div>
+  </body>
+</html>
