@@ -53,12 +53,12 @@ to be executed at specific points in the
 deployment process of the OpenShift app. The scripts are located in
 `~/projects/owncloud/.openshift/action_hooks`.
 
-    * **pre_build** - Restores an existing configuration file and removes the
-      autoconfig script above for succeeding pushes.
-    * **deploy** - Ensures that the MySQL cartridge is available.
-    * **post_deploy** - During the first push, it will autoconfigure the
-      ownCloud instance. For succeeding deployments, it will ensure that an
-      existing configuration is used.
+* **pre_build** - Restores an existing configuration file and removes the
+  autoconfig script above for succeeding pushes.
+* **deploy** - Ensures that the MySQL cartridge is available.
+* **post_deploy** - During the first push, it will autoconfigure the
+  ownCloud instance. For succeeding deployments, it will ensure that an
+  existing configuration is used.
 
 ## Deploy ownCloud
 
